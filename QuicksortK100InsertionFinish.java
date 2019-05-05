@@ -11,7 +11,7 @@
  */
 package Module13_Lab4;
 
-public class QuickSortk100 {
+public class QuicksortK100InsertionFinish {
 
    /**
     * @param args
