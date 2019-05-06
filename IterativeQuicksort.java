@@ -54,8 +54,8 @@ public class IterativeQuicksort {
 //
 //      iq.copyArray(refNumbers, numbers);
 //
-//      iq.quicksort(numbers, 0, numbers.length - 1);
-////      iq.Quicksort(unsorted, 0, unsorted.length - 1);
+//      iq.quicksort("qs", numbers, 0, numbers.length - 1);
+////      iq.Quicksort("qs", unsorted, 0, unsorted.length - 1);
 //      iq.printArr(numbers, numbers.length);
 ////      iq.printArr(unsorted, unsorted.length);
 //
@@ -66,7 +66,7 @@ public class IterativeQuicksort {
    // Ref: https://javarevisited.blogspot.com/2016/09/
    // iterative-quicksort-example-in-java-without-recursion.html
    // #ixzz5n6BmPVfj
-   public void quicksort(int arr[], int lowerIndex, int upperIndex) {
+   public void quicksort(String sortType, int arr[], int lowerIndex, int upperIndex) {
 
       int pivotIndex;
       Stack<Integer> stack = new Stack<Integer>();
@@ -80,6 +80,22 @@ public class IterativeQuicksort {
          // partition sizes of one and two are already sorted
          if (end - start < 2) {
             continue;
+         }
+         else if (sortType.equals("qs")){
+
+         }
+         else if (sortType.equals("qs_k50")){
+            if ((end - start) == 50) {
+               System.out.println("*** PARTITION SIZE = 50 ***");
+            }
+         }
+         else if (sortType.equals("qs_k100")){
+            if ((end - start) == 100) {
+               System.out.println("*** PARTITION SIZE = 100 ***");
+            }
+         }
+         else if (sortType.equals("qs_mot")){
+            
          }
          
          pivotIndex = partition(arr, start, end);

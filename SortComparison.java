@@ -161,7 +161,7 @@ public class SortComparison {
          sc.runMulti(refNumbers, numbers, orderType[fileIndex], 1);
          if (arrSize == 50) { // output file for n = 50, only
             sc.copyArray(refNumbers, numbers);
-            sc.iqs.quicksort(numbers, 0, numbers.length - 1);
+            sc.iqs.quicksort("qs", numbers, 0, numbers.length - 1);
             sc.printArray(numbers, sc.output); // sorted array to output file
          }
 
@@ -278,7 +278,7 @@ public class SortComparison {
       for (int i = 0; i < numIterations; i++) {
          this.copyArray(refArr, arr);
          startTime = System.nanoTime();
-         this.iqs.quicksort(arr, 0, arr.length - 1);
+         this.iqs.quicksort("qs", arr, 0, arr.length - 1);
          endTime = System.nanoTime(); // stop metric
          runTime = endTime - startTime; // calculate metric
          // System.out.println(" Round " + (i+1) + ": " + runTime);
@@ -291,7 +291,7 @@ public class SortComparison {
       for (int i = 0; i < numIterations; i++) {
          this.copyArray(refArr, arr);
          startTime = System.nanoTime();
-         // this.iqs.quicksort(arr, 0, arr.length-1);
+         this.iqs.quicksort("qs_k50", arr, 0, arr.length-1);
          endTime = System.nanoTime(); // stop metric
          runTime = endTime - startTime; // calculate metric
          // System.out.println("    Round " + (i+1) + ": " + runTime);
@@ -304,7 +304,7 @@ public class SortComparison {
       for (int i = 0; i < numIterations; i++) {
          this.copyArray(refArr, arr);
          startTime = System.nanoTime();
-         // this.iqs.quicksort(arr, 0, arr.length-1);
+          this.iqs.quicksort("qs_k100", arr, 0, arr.length-1);
          endTime = System.nanoTime(); // stop metric
          runTime = endTime - startTime; // calculate metric
          // System.out.println("    Round " + (i+1) + ": " + runTime);
@@ -317,7 +317,7 @@ public class SortComparison {
       for (int i = 0; i < numIterations; i++) {
          this.copyArray(refArr, arr);
          startTime = System.nanoTime();
-         // this.iqs.quicksort(arr, 0, arr.length-1);
+         // this.iqs.quicksort("qs_mot", arr, 0, arr.length-1);
          endTime = System.nanoTime(); // stop metric
          runTime = endTime - startTime; // calculate metric
          // System.out.println("    Round " + (i+1) + ": " + runTime);
@@ -330,7 +330,7 @@ public class SortComparison {
       for (int i = 0; i < numIterations; i++) {
          this.copyArray(refArr, arr);
          startTime = System.nanoTime();
-         // this.iqs.quicksort(arr, 0, arr.length-1);
+         // this.iqs.heapsort(arr, 0, arr.length-1);
          endTime = System.nanoTime(); // stop metric
          runTime = endTime - startTime; // calculate metric
          // System.out.println("Round " + (i+1) + ": " + runTime);
