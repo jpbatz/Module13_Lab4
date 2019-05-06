@@ -11,19 +11,56 @@ package Module13_Lab4;
 
 public class RunMetric {
 
-   public RunMetric(long size, long runTime) {
+   public RunMetric(long size, String order, String type, long avgRuntime) {
       this.size = size;
-      this.runTime = runTime;
+      this.order = "";
+      this.type = "";
+      this.avgRuntime = avgRuntime;
    }
 
    /**
-    * method: getRuntime() - returns running time
+    * method: getAvgRuntime() - returns running time
     * 
     * @param none
     * @return runTime - running time in nSec
     */
-   public long getRuntime() {
-      return this.runTime;
+   public long getAvgRuntime() {
+      return this.avgRuntime;
+   }
+
+   /**
+    * @param avgRuntime the avgRuntime to set
+    */
+   public void setAvgRuntime(long avgRuntime) {
+      this.avgRuntime = avgRuntime;
+   }
+
+   /**
+    * @return the order
+    */
+   public String getOrder() {
+      return order;
+   }
+
+   /**
+    * @param order the order to set
+    */
+   public void setOrder(String order) {
+      this.order = order;
+   }
+
+   /**
+    * @return the type
+    */
+   public String getType() {
+      return type;
+   }
+
+   /**
+    * @param type the type to set
+    */
+   public void setType(String type) {
+      this.type = type;
    }
 
    /**
@@ -36,9 +73,25 @@ public class RunMetric {
       return this.size;
    }
 
+   /**
+    * @param size the size to set
+    */
+   public void setSize(long size) {
+      this.size = size;
+   }
+   
    // ***** PRIVATE VARIABLE(S) *****
-
+   // n = 50, 500, 1000, 2000, 5000, 10000, or 20000
    private long size;
-   private long runTime;
+   
+   // order of input data (asc)ending, (ran)dom, (dup)licates, (rev)erse
+   private String order;
+   
+   // sorting methods:
+   // qs, qs_k50, qs_k100, qs_mot (median of three), hs (heap sort)
+   private String type;
+   
+   // average runtimes
+   private long avgRuntime;
 
 }

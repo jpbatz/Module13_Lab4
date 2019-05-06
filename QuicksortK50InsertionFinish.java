@@ -5,7 +5,7 @@
  * Module 13: Lab 4 - Sort Comparison
  * Class: QuicksortStopk50.java
  * Iterative Quicksort 3:
- * Pivot = [1]
+ * Pivot = [0]
  * Stop at partition size k = 50
  * Finish with Insertion Sort
  */

@@ -29,12 +29,13 @@ public class SortComparison {
    BufferedReader  input;
    BufferedWriter  output;
    
+   IterativeQuicksort iqs;
+   
    public SortComparison() {
       metricsIndex = 0;
       numItems = 0;
       
-      // get number of items in input file
-      // numItems = ;
+      this.iqs = new IterativeQuicksort();
       
       runMetrics = new RunMetric[numItems];
    }
@@ -46,12 +47,17 @@ public class SortComparison {
       long startTime = 0;
       long endTime = 0;
       long runTime = 0;
+      long avgRuntime = 0;
       int[] refNumbers;  // original input values for restoring between sorts
       int[] numbers;     // working space to sort reference numbers
       int arrSize = 0;
       
+      String inputOrder;
+      String sortType;
+      
       SortComparison sc = new SortComparison();
-      IterativeQuicksort iqs = new IterativeQuicksort();
+//      IterativeQuicksort iqs = new IterativeQuicksort();
+
 
       // ===== verify commandline arguments =====
       
@@ -69,6 +75,7 @@ public class SortComparison {
          System.exit(1);
       }
       
+      // remove "10" for submission
       if ((!args[0].equalsIgnoreCase("10")) && 
           (!args[0].equalsIgnoreCase("50")) && 
           (!args[0].equalsIgnoreCase("500")) && 
@@ -90,99 +97,70 @@ public class SortComparison {
       sc.output = sc.openOutputFileHandler(sc.output, args[2]);
       
       // set array size for input size values
-      switch (args[0].toUpperCase()) {
-         case "10": {
-            arrSize = 10;
-            break;
-         }
-         case "50": {
-            arrSize = 50;
-            break;
-         }
-         case "500": {
-            arrSize = 500;
-            break;
-         }
-         case "1K": {
-            arrSize = 1000;
-            break;
-         }
-         case "2K": {
-            arrSize = 2000;
-            break;
-         }
-         case "5K": {
-            arrSize = 5000;
-            break;
-         }
-         case "10K": {
-            arrSize = 10000;
-            break;
-         }
-         case "20K": {
-            arrSize = 20000;
-            break;
-         }
-         default: {
-            System.out.println("Switch: Invalid Input Size");
-            System.exit(1);
-         }
-      }
-      
+      arrSize = sc.getArraySize(args[0].toUpperCase());
       
       // import integers from input file(s)
-      //for each file
-      // for each item in file
-      // numbers = new int[];
       
-      // dev:
+      //for each file
+      //   for each item in file
+      //      numbers = new int[];
+      
       refNumbers = new int[arrSize];
       numbers = new int[arrSize];
 
       // loads the reference array
-//      System.out.println("Input values to reference array:");
-      for (int i=0; i<arrSize; i++) {
+      // System.out.println("Input values to reference array:");
+      for (int i = 0; i < arrSize; i++) {
          try {
             refNumbers[i] = Integer.parseInt(sc.input.readLine());
          } catch (IOException ioe) {
             System.out.println(ioe);
             System.exit(1);
          }
-//         System.out.println(refNumbers[i]);
+         // System.out.println(refNumbers[i]);
       }
       
       System.out.println();
       
       sc.copyArray(refNumbers, numbers);
-//      System.out.println("Input numbers[]:");
-//      sc.printArray(numbers, sc.output);
+      // System.out.println("Input numbers:");
+      // sc.printArray(numbers, sc.output);
+      
+
       
       // sorts the array
-      startTime = System.nanoTime();
       
-      iqs.quicksort(numbers, 0, numbers.length-1);
+      // run sort type (may need to run multiple - reset order per pass)
+      // run on 50, 500, 1k, 2k, 5k, 10k, 20k items
+      
+      // quicksort 1
+//      startTime = System.nanoTime();   // start metric
+//      iqs.quicksort(numbers, 0, numbers.length-1);
+      avgRuntime = sc.runMulti(numbers, "asc", 5);
       if (arrSize == 50) { // output file for n = 50, only
          System.out.println("Sorted numbers:");
          sc.printArray(numbers, sc.output);
       }
+//      endTime = System.nanoTime();     // stop  metric
+//      runTime = endTime - startTime;   // calculate metric
+//      // report metrics
+//      System.out.println("Runtime = " + (runTime) + " nSec");
+//      System.out.println("Runtime = " + (runTime/1000) + " uSec");
+//      System.out.println("Runtime = " + (runTime / 1000000) + " mSec");
+
+      // store metrics
+      // sc.saveMetrics(arrSize, inputOrder, sortType, avgRunTime, output);
       
-      endTime = System.nanoTime();
-      runTime = endTime - startTime;
       
-      System.out.println("Runtime = " + (runTime) + " nSec");
-      System.out.println("Runtime = " + (runTime/1000) + " uSec");
-      System.out.println("Runtime = " + (runTime/1000000) + " mSec");
-      //
+      // quicksort 2 (insertion sort from k=50)
       
-      startTime = System.nanoTime();
+      // quicksort 3 (insertion sort from k=100)
       
-      // run sort type (may need to run multiple - reset order per pass)
-      // run on 50, 500, 1k, 2k, 5k, 10k, 20k items
-      //qs.quicksort(numbers, i, k);
       
-      endTime = System.nanoTime();
-     
-//      sc.saveMetrics(totalNumMoves, runTime, output);
+      // quicksort 4 (median of three)
+      
+      // heap sort
+      
       
       // ==== close i/o file handlers =====
 
@@ -222,27 +200,128 @@ public class SortComparison {
       System.out.println();
    }
    
+   private int getArraySize(String arg) {
+      int arrSize = 0;
+      switch (arg) {
+         // remove case "10" for submission
+         case "10": {
+            arrSize = 10;
+            break;
+         }
+         case "50": {
+            arrSize = 50;
+            break;
+         }
+         case "500": {
+            arrSize = 500;
+            break;
+         }
+         case "1K": {
+            arrSize = 1000;
+            break;
+         }
+         case "2K": {
+            arrSize = 2000;
+            break;
+         }
+         case "5K": {
+            arrSize = 5000;
+            break;
+         }
+         case "10K": {
+            arrSize = 10000;
+            break;
+         }
+         case "20K": {
+            arrSize = 20000;
+            break;
+         }
+         default: {
+            System.out.println("Switch: Invalid Input Size");
+            System.exit(1);
+         }
+      }
+      return arrSize;
+   }
+   
    private void copyArray(int[] srcArr, int[] destArr) {
       for (int i = 0; i < srcArr.length; i++) {
          destArr[i] = srcArr[i];
       }
    }
    
+   private long runMulti(int[] arr, String sortType, int numIterations) {
+      long avgRuntime = 0;
+      long startTime = 0;
+      long endTime = 0;
+      long runTime = 0;
+      long totalRuntime = 0;
+      
+      switch(sortType) {
+         case "asc": {
+            for (int i=0; i<numIterations; i++) {
+               startTime = System.nanoTime();
+               this.iqs.quicksort(arr, 0, arr.length-1);
+               endTime = System.nanoTime();     // stop  metric
+               runTime = endTime - startTime;   // calculate metric
+               // report metrics
+               System.out.print("Round " + (i+1) + ": ");
+               System.out.println("  Runtime = " + (runTime) + " nSec");
+//               System.out.println(" Runtime = " + (runTime/1000) + " uSec");
+//               System.out.println(" Runtime = " + (runTime / 1000000) + " mSec");
+               totalRuntime += runTime;
+            }
+            System.out.println("\nCumulative Runtime = " + totalRuntime + "nSec");
+            break;
+         }
+         case "ran": {
+            for (int i=0; i<numIterations; i++) {
+               // runtime = 
+               totalRuntime += runTime;
+            }
+            break;
+         }
+         case "dup": {
+            for (int i=0; i<numIterations; i++) {
+               // runtime = 
+               totalRuntime += runTime;
+            }
+            break;
+         }
+         case "rev": {
+            for (int i=0; i<numIterations; i++) {
+               // runtime = 
+               totalRuntime += runTime;
+            }
+            break;
+         }
+         default: {
+            System.out.println("[SortComparison - runMulti()]: Invalid sort type " + sortType);
+            System.exit(1);
+         }
+      }
+      avgRuntime = totalRuntime/numIterations;
+      System.out.println("   Average Runtime = " + avgRuntime + "nSec\n");
+      return avgRuntime;
+   }
+   
    /**
-    * method: saveMetrics() - saves number of disks and run time
+    * method: saveMetrics() - saves number of items and avg run time
     *                         for metric object
-    * @param numDisks - number of disks, n
-    * @param timeElapsed - running time for n disks
+    * @param numItems - number of input items, n
+    * @param avgTimeElapsed - avg running time for n items
     * @param output - output file handler
     * @return - none
     * @ref - Project0 (JHU)
     */
-   private void saveMetrics(long numDisks, long timeElapsed, BufferedWriter output) {
-      RunMetric item = new RunMetric(numDisks, timeElapsed);
+   private void saveMetrics(long numItems, String inputOrder, String sortType,
+                            long avgTimeElapsed, BufferedWriter output) {
+      RunMetric item = new RunMetric(numItems, avgTimeElapsed);
       runMetrics[metricsIndex] = item;
       try {
-         output.write("\nRuntime: " + runMetrics[metricsIndex].getSize() + 
-                      " moves in " +  runMetrics[metricsIndex].getRuntime() + " nSec\n");
+         output.write(runMetrics[metricsIndex].getRuntime() + 
+                    " nSec for " + runMetrics[metricsIndex].getSize() + 
+                    " items");
       } catch (IOException ioe) {
          System.err.println(ioe.toString());
          return;
