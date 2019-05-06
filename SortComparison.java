@@ -122,7 +122,7 @@ public class SortComparison {
       
       System.out.println();
       
-      sc.copyArray(refNumbers, numbers);
+//      sc.copyArray(refNumbers, numbers);
       // System.out.println("Input numbers:");
       // sc.printArray(numbers, sc.output);
       
@@ -134,19 +134,11 @@ public class SortComparison {
       // run on 50, 500, 1k, 2k, 5k, 10k, 20k items
       
       // quicksort 1
-//      startTime = System.nanoTime();   // start metric
-//      iqs.quicksort(numbers, 0, numbers.length-1);
-      avgRuntime = sc.runMulti(numbers, "asc", 5);
+      avgRuntime = sc.runMulti(refNumbers, numbers, "asc", 50);
       if (arrSize == 50) { // output file for n = 50, only
          System.out.println("Sorted numbers:");
          sc.printArray(numbers, sc.output);
       }
-//      endTime = System.nanoTime();     // stop  metric
-//      runTime = endTime - startTime;   // calculate metric
-//      // report metrics
-//      System.out.println("Runtime = " + (runTime) + " nSec");
-//      System.out.println("Runtime = " + (runTime/1000) + " uSec");
-//      System.out.println("Runtime = " + (runTime / 1000000) + " mSec");
 
       // store metrics
       // sc.saveMetrics(arrSize, inputOrder, sortType, avgRunTime, output);
@@ -250,28 +242,32 @@ public class SortComparison {
       }
    }
    
-   private long runMulti(int[] arr, String sortType, int numIterations) {
+   private long runMulti(int[] refArr, int[] arr, String sortType, int numIterations) {
+      
       long avgRuntime = 0;
       long startTime = 0;
       long endTime = 0;
       long runTime = 0;
       long totalRuntime = 0;
       
+      // need to reload the refNumbers[] array after each run
       switch(sortType) {
          case "asc": {
             for (int i=0; i<numIterations; i++) {
+               // do the array copy here
+               this.copyArray(refArr, arr);
                startTime = System.nanoTime();
                this.iqs.quicksort(arr, 0, arr.length-1);
                endTime = System.nanoTime();     // stop  metric
                runTime = endTime - startTime;   // calculate metric
                // report metrics
-               System.out.print("Round " + (i+1) + ": ");
-               System.out.println("  Runtime = " + (runTime) + " nSec");
+//               System.out.print("Round " + (i+1) + ": ");
+//               System.out.println("  Runtime = " + (runTime) + " nSec");
 //               System.out.println(" Runtime = " + (runTime/1000) + " uSec");
 //               System.out.println(" Runtime = " + (runTime / 1000000) + " mSec");
                totalRuntime += runTime;
+               
             }
-            System.out.println("\nCumulative Runtime = " + totalRuntime + "nSec");
             break;
          }
          case "ran": {
@@ -300,6 +296,8 @@ public class SortComparison {
             System.exit(1);
          }
       }
+      System.out.println("    Number of Runs = " + numIterations);
+      System.out.println("Cumulative Runtime = " + totalRuntime + "nSec");
       avgRuntime = totalRuntime/numIterations;
       System.out.println("   Average Runtime = " + avgRuntime + "nSec\n");
       return avgRuntime;
