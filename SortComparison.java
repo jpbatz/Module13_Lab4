@@ -51,7 +51,7 @@ public class SortComparison {
       int arrSize = 0;
       
       SortComparison sc = new SortComparison();
-      Quicksort qs = new Quicksort();
+      IterativeQuicksort iqs = new IterativeQuicksort();
 
       // ===== verify commandline arguments =====
       
@@ -160,9 +160,11 @@ public class SortComparison {
       // sorts the array
       startTime = System.nanoTime();
       
-      qs.quicksort(numbers, 0, numbers.length-1);
-      System.out.println("Sorted numbers[]:");
-      sc.printArray(numbers, sc.output);
+      iqs.quicksort(numbers, 0, numbers.length-1);
+      if (arrSize == 50) { // output file for n = 50, only
+         System.out.println("Sorted numbers:");
+         sc.printArray(numbers, sc.output);
+      }
       
       endTime = System.nanoTime();
       runTime = endTime - startTime;
@@ -179,14 +181,9 @@ public class SortComparison {
       //qs.quicksort(numbers, i, k);
       
       endTime = System.nanoTime();
-      
-//      sc.writeOut("...End\n", output);
-//      sc.print50(output);
-
-//      runTime = endTime - startTime;
+     
 //      sc.saveMetrics(totalNumMoves, runTime, output);
       
-
       // ==== close i/o file handlers =====
 
       // closes input file handler(s)
@@ -230,6 +227,7 @@ public class SortComparison {
          destArr[i] = srcArr[i];
       }
    }
+   
    /**
     * method: saveMetrics() - saves number of disks and run time
     *                         for metric object
