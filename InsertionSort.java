@@ -11,12 +11,50 @@ package Module13_Lab4;
 
 public class InsertionSort {
 
-   /**
-    * @param args
-    */
-   public static void main(String[] args) {
-      // TODO Auto-generated method stub
+   // for testing - remove for submission
+   // public static void main(String[] args) {
+   // InsertionSort is = new InsertionSort();
+   // int numbers[] = {16, 19, 11, 15, 10, 12, 14};
+   // is.insertionSort(numbers, 0, numbers.length);
+   // is.printArray(numbers);
+   // }
 
+   // Ref: https://www.codesdope.com/blog/article/
+   // sorting-an-array-using-insertion-sort-in-java/
+   public void insertionSort(int[] arr, int startIndex, int endIndex) {
+
+      // first item at index 0 is already sorted for itself
+      for (int currIndex = 1; currIndex < arr.length; currIndex++) {
+
+         // comparison index starts at current index
+         int compIndex = currIndex;
+
+         // move current item to its sorted position:
+         // compare each item before current index
+         // and swap if current item value is less
+         while (compIndex > 0) {
+            // swap with previous item if out of order
+            if (arr[compIndex - 1] > arr[compIndex]) {
+               this.swap(arr, compIndex, (compIndex - 1));
+            } else { // already in order, move on to next item
+               break;
+            }
+            compIndex--;
+         }
+      }
+   }
+
+   private void printArray(int[] arr) {
+      for (int x : arr) {
+         System.out.println(x);
+      }
+   }
+
+   private void swap(int[] arr, int leftIndex, int rightIndex) {
+      int temp = arr[leftIndex];
+      arr[leftIndex] = arr[rightIndex];
+      arr[rightIndex] = temp;
+      return;
    }
 
 }

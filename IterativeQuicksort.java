@@ -22,6 +22,8 @@ import java.util.Stack;
 public class IterativeQuicksort {
    BufferedReader input;
    BufferedWriter output;
+   
+   InsertionSort is = new InsertionSort();
 
    // driver code to test above
 //   public static void main(String args[]) {
