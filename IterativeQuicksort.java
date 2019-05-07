@@ -71,17 +71,26 @@ public class IterativeQuicksort {
    // #ixzz5n6BmPVfj
    public void quicksort(String sortType, int arr[], int lowerIndex, int upperIndex) {
 
-      int pivotIndex = 0;
+//      int pivotIndex = 0;
+      int pivotIndex;
+      int end;
+      int start;
       Stack<Integer> stack = new Stack<Integer>();
-      stack.push(0);
-      stack.push(arr.length);
+//      stack.push(0);
+      stack.push(lowerIndex);
+//      stack.push(arr.length);
+      stack.push(upperIndex);
       while (!stack.isEmpty()) {
          
-         int end = (int) stack.pop();
-         int start = (int) stack.pop();
+         end = (int) stack.pop();
+         start = (int) stack.pop();
          
          // partition sizes of one and two are already sorted
+//         if ((end - start) <2) { // two items
          if ((end - start + 1) <= 2) { // two items
+            if (arr[start] > arr[end]) {
+               this.swap(arr, start, end);
+            }
             continue;
          }
          
@@ -90,14 +99,14 @@ public class IterativeQuicksort {
             pivotIndex = partition(arr, start, end, "qs");
 //            System.out.println("qs pivotIndex = " + pivotIndex);
          } else if (sortType.equals("qs_k50")) {
-            if ((end - start) == 50) {
+            if ((end - start + 1) == 50) {
                // System.out.println("*** PARTITION SIZE = 50 ***");
                is.insertionSort(arr, start, end);
             }
             pivotIndex = partition(arr, start, end, "qs_k50");
 //            System.out.println("qs_k50 pivotIndex = " + pivotIndex);
          } else if (sortType.equals("qs_k100")){
-            if ((end - start) == 100) {
+            if ((end - start + 1) == 100) {
                // System.out.println("*** PARTITION SIZE = 100 ***");
                is.insertionSort(arr, start, end);
             }
@@ -117,40 +126,92 @@ public class IterativeQuicksort {
       }
 
    }
-   // Ref: https://javarevisited.blogspot.com/2016/09/
-   // iterative-quicksort-example-in-java-without-recursion.html
-   // #ixzz5n6F8nAuX
-   // modified, first item is pivot
+   // Ref: zyBook Module 9: Chapter 7.2 Quicksort
+   // modified for first item is pivot
+  
    private int partition(int arr[], int lowIndex, int highIndex, String qsType) {
 
-      int idx = 0;
-      int l = lowIndex;
-      int h = highIndex - 2;
+      int l;
+      int h;
       int pivotValue;
+      int temp;
+      boolean done;
 
+      done = false;
+      l = lowIndex;
+      h = highIndex;
+      
+      /* pick pivot value */
       if (qsType.equals("qs_mot")) {
          pivotValue = this.medianOfThree(arr, lowIndex, highIndex);
       } else { // qsType is "qs", "qs_k50", or "qs_k100"
-         pivotValue = arr[lowIndex]; // pivot value is the first item
+         pivotValue = arr[lowIndex]; // pick first item as pivot value
       }
-      
-      swap(arr, lowIndex, highIndex - 1);
-      while (l < h) {
-         if (arr[l] < pivotValue) {
-            l++;
-         } else if (arr[h] >= pivotValue) {
-            h--;
+
+      while (!done) {
+         /* Increment l while numbers[l] < pivot */
+         while (arr[l] < pivotValue) {
+            ++l;
+         }
+         /* Decrement h while pivot < numbers[h] */
+         while (pivotValue < arr[h]) {
+            --h;
+         }
+         /*
+          * If there are zero or one items remaining, all numbers are
+          * partitioned. Return h
+          */
+         if (l >= h) {
+            done = true;
          } else {
-            swap(arr, l, h);
+            /*
+             * Swap numbers[l] and numbers[h], update l and h
+             */
+            temp = arr[l];
+            arr[l] = arr[h];
+            arr[h] = temp;
+            ++l;
+            --h;
          }
       }
-      idx = h;
-      if (arr[h] < pivotValue) {
-         idx++;
-      }
-      swap(arr, highIndex - 1, idx);
-//      System.out.println("idx = " + idx);
-      return idx;
+      return h;
+         
+      // Ref: https://javarevisited.blogspot.com/2016/09/
+      // iterative-quicksort-example-in-java-without-recursion.html
+      // #ixzz5n6F8nAuX
+      // modified, first item is pivot
+//      int idx = 0;
+//      int l = lowIndex;
+////      int h = highIndex - 2; // original
+////      int h = highIndex - 1;
+//      int h = highIndex;
+//      int pivotValue;
+//
+//      if (qsType.equals("qs_mot")) {
+//         pivotValue = this.medianOfThree(arr, lowIndex, highIndex);
+//         pivotValue = this.medianOfThree(arr, l, h);
+//      } else { // qsType is "qs", "qs_k50", or "qs_k100"
+//         pivotValue = arr[l]; // pivot value is the first item
+//      }
+//      
+//      swap(arr, lowIndex, highIndex - 1); // why??
+////      swap(arr, lowIndex, highIndex);
+//      while (l < h) {
+//         if (arr[l] < pivotValue) {
+//            l++;
+//         } else if (arr[h] >= pivotValue) {
+//            h--;
+//         } else {
+//            swap(arr, l, h);
+//         }
+//      }
+//      idx = h;
+//      if (arr[h] < pivotValue) {
+//         idx++;
+//      }
+//      swap(arr, highIndex - 1, idx); // why??
+////      System.out.println("idx = " + idx);
+//      return idx;
    }
 
 

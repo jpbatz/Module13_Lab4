@@ -291,7 +291,11 @@ public class SortComparison {
       long runTime = 0;
       long totalRuntime = 0;
       long avgRuntime = 0;
+      
       int size = refArr.length;
+      int firstIndex = 0;
+      int lastIndex = size - 1;
+      
       String[] subHeadings = {"Quicksort 1 - Pivot First Item:",
             "Quicksort 2 - k=50 Insertion Sort:",
             "Quicksort 3 - k=100 Insertion Sort:",
@@ -310,7 +314,8 @@ public class SortComparison {
                this.copyArray(refArr, arr);
                this.printArray(arr);
                startTime = System.nanoTime();
-               this.iqs.quicksort(this.sortTypes[index], arr, 0, arr.length - 1);
+//               this.iqs.quicksort(this.sortTypes[index], arr, 0, arr.length - 1);
+               this.iqs.quicksort(this.sortTypes[index], arr, firstIndex, lastIndex);
 //               System.out.println("RunAll sortTypes: " + this.sortTypes[index]);
                endTime = System.nanoTime(); // stop metric
                runTime = endTime - startTime; // calculate metric
