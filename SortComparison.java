@@ -34,6 +34,7 @@ public class SortComparison {
    BufferedWriter  report;    // contains runtime metrics
    BufferedWriter  output;    // contain sorted output for 50 items
    
+   ProjectUtils utils;
    IterativeQuicksort iqs;
    HeapSort hs;
    
@@ -41,6 +42,7 @@ public class SortComparison {
       metricsIndex = 0;
       numItems = 0;
       
+      this.utils = new ProjectUtils();
       this.iqs = new IterativeQuicksort();
       this.hs = new HeapSort();
       
@@ -216,12 +218,19 @@ public class SortComparison {
       return;
    }
    
-   private void printArray(int[] arr) {
-      for (int i=0; i<arr.length; i++) {
-         System.out.print(String.valueOf(arr[i]) + " ");
-      }
-      System.out.println();
-   }
+//   private void printArray(int[] arr) {
+//      for (int i=0; i<arr.length; i++) {
+//         System.out.print(String.valueOf(arr[i]) + " ");
+//      }
+//      System.out.println();
+//   }
+   
+//   public void printArray(int[] arr) {
+//      for (int item : arr) {
+//         System.out.print(item + " ");
+//      }
+//      System.out.println();
+//   }
    
    
    private void writeArrayOut(int[] arr, BufferedWriter output) {
@@ -312,7 +321,7 @@ public class SortComparison {
             this.resetTimeVars(startTime, endTime, runTime, totalRuntime, avgRuntime);
             for (int i = 0; i < numIterations; i++) {
                this.copyArray(refArr, arr);
-               this.printArray(arr);
+               utils.printArray(arr);
                startTime = System.nanoTime();
 //               this.iqs.quicksort(this.sortTypes[index], arr, 0, arr.length - 1);
                this.iqs.quicksort(this.sortTypes[index], arr, firstIndex, lastIndex);
@@ -322,7 +331,7 @@ public class SortComparison {
                // System.out.println(" Round " + (i+1) + ": " + runTime);
                totalRuntime += runTime;
             }
-            this.printArray(arr);
+            utils.printArray(arr);
             this.displayMetrics(totalRuntime, numIterations);
          
          // sort type: "hs"
@@ -331,7 +340,7 @@ public class SortComparison {
             this.resetTimeVars(startTime, endTime, runTime, totalRuntime, avgRuntime);
             for (int i = 0; i < numIterations; i++) {
                this.copyArray(refArr, arr);
-               this.printArray(arr);
+               utils.printArray(arr);
                startTime = System.nanoTime();
                this.hs.heapsort(arr, arr.length);
                endTime = System.nanoTime(); // stop metric
@@ -339,7 +348,8 @@ public class SortComparison {
                // System.out.println("Round " + (i+1) + ": " + runTime);
                totalRuntime += runTime;
             }
-            this.hs.printArray(arr);
+//            this.hs.printArray(arr);
+            utils.printArray(arr);
             this.displayMetrics(totalRuntime, numIterations);
          }
          

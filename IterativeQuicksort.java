@@ -25,7 +25,8 @@ public class IterativeQuicksort {
 //   BufferedWriter output;
    
    InsertionSort is = new InsertionSort();
-
+   ProjectUtils utils = new ProjectUtils();
+   
    // driver code to test above
 //   public static void main(String args[]) {
 //
@@ -89,7 +90,7 @@ public class IterativeQuicksort {
 //         if ((end - start) <2) { // two items
          if ((end - start + 1) <= 2) { // two items
             if (arr[start] > arr[end]) {
-               this.swap(arr, start, end);
+               utils.swap(arr, start, end);
             }
             continue;
          }
@@ -215,12 +216,12 @@ public class IterativeQuicksort {
    }
 
 
-   private void swap(int[] arr, int leftIndex, int rightIndex) {
-      int temp = arr[leftIndex];
-      arr[leftIndex] = arr[rightIndex];
-      arr[rightIndex] = temp;
-      return;
-   }
+//   private void swap(int[] arr, int leftIndex, int rightIndex) {
+//      int temp = arr[leftIndex];
+//      arr[leftIndex] = arr[rightIndex];
+//      arr[rightIndex] = temp;
+//      return;
+//   }
 
    // determines next pivot item
    private int medianOfThree(int[] arr, int startIndex, int endIndex) {
@@ -278,11 +279,13 @@ public class IterativeQuicksort {
    
    // *** REMOVE AFTER TESTING ***
    
-   // prints contents of arr
-   public void printArray(int arr[]) {
-      for (int i = 0; i < arr.length; ++i)
-         System.out.print(arr[i] + " ");
-   }
+//   // prints contents of arr
+//   public void printArray(int[] arr) {
+//      for (int item : arr) {
+//         System.out.print(item + " ");
+//      }
+//      System.out.println();
+//   }
 
    private void copyArray(int[] srcArr, int[] destArr) {
       for (int i = 0; i < srcArr.length; i++) {

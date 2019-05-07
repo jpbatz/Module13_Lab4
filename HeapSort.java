@@ -12,6 +12,8 @@ package Module13_Lab4;
 
 public class HeapSort {
 
+   ProjectUtils utils = new ProjectUtils();
+   
 //   public static void main(String[] args) {
 //      int arr[] = {10, 20, 15, 17, 9, 21}; 
 //      int n = arr.length; 
@@ -48,7 +50,7 @@ public class HeapSort {
          // parent is smaller 
          while (arr[j] > arr[(j - 1) / 2]) 
          { 
-           swap(arr, j, (j - 1) / 2); 
+           utils.swap(arr, j, (j - 1) / 2); 
            j = (j - 1) / 2; 
          } 
        } 
@@ -63,7 +65,7 @@ public class HeapSort {
      { 
        // swap value of first indexed 
        // with last indexed 
-       swap(arr, 0, i); 
+       utils.swap(arr, 0, i); 
    
        // maintaining heap property 
        // after each swapping 
@@ -83,7 +85,7 @@ public class HeapSort {
          // then swapping parent with child 
          // having higher value 
          if (index < i && arr[j] < arr[index]) 
-           swap(arr, j, index); 
+           utils.swap(arr, j, index); 
    
          j = index; 
    
@@ -91,19 +93,27 @@ public class HeapSort {
      } 
    } 
    
-   private void swap(int[] a, int i, int j) { 
-     int temp = a[i]; 
-     a[i]=a[j]; 
-     a[j] = temp; 
-   } 
+//   private void swap(int[] a, int i, int j) { 
+//     int temp = a[i]; 
+//     a[i]=a[j]; 
+//     a[j] = temp; 
+//   } 
    
    /* A utility function to print array of size n */
-   public void printArray(int arr[]) 
-   { 
-     int n = arr.length; 
-     for (int i = 0; i < n; i++) 
-       System.out.print(arr[i] + " "); 
-     System.out.println(); 
-   } 
+//   public void printArray(int arr[]) 
+//   { 
+//     int n = arr.length; 
+//     for (int i = 0; i < n; i++) 
+//       System.out.print(arr[i] + " "); 
+//     System.out.println(); 
+//   }
+   
+//   public void printArray(int[] arr) {
+//      for (int item : arr) {
+//         System.out.print(item + " ");
+//      }
+//      System.out.println();
+//   }
+
    
  } 
