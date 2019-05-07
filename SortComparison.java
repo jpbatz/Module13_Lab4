@@ -173,7 +173,8 @@ public class SortComparison {
             // TODO output for each of the 5 sort types
             sc.copyArray(refNumbers, numbers);
             sc.iqs.quicksort("qs", numbers, 0, numbers.length - 1);
-            sc.printArray(numbers, sc.output); // sorted array to output file
+            // sc.printArray(numbers);
+            sc.writeArrayOut(numbers, sc.output); // sorted array to output file
          }
 
          // closes input file handler(s)
@@ -215,7 +216,15 @@ public class SortComparison {
       return;
    }
    
-   private void printArray(int[] arr, BufferedWriter output) {
+   private void printArray(int[] arr) {
+      for (int i=0; i<arr.length; i++) {
+         System.out.print(String.valueOf(arr[i]) + " ");
+      }
+      System.out.println();
+   }
+   
+   
+   private void writeArrayOut(int[] arr, BufferedWriter output) {
       for (int i=0; i<=arr.length-1; i++) {
          this.writeOut(String.valueOf(arr[i]), output);
       }
@@ -267,13 +276,15 @@ public class SortComparison {
    }
    
    private void copyArray(int[] srcArr, int[] destArr) {
+      // destArr = null;
+      // destArr = new int[srcArr.length];
       for (int i = 0; i < srcArr.length; i++) {
          destArr[i] = srcArr[i];
       }
    }
    
    private void runAllSortTypes(int[] refArr, int[] arr, String orderType, 
-                         int numIterations) {
+                                int numIterations) {
 
       long startTime = 0;
       long endTime = 0;
@@ -289,8 +300,6 @@ public class SortComparison {
       
       System.out.println("=== " + this.getHeader(orderType, size) + " ===\n");
       
-//      for (String sortType : sortTypes) {
-        
       for (int index = 0; index < NUM_SORT_TYPES; index++) {
          
          // sort types: "qs", "qs_k50", "qs_k100", "qs_mot"
@@ -299,13 +308,16 @@ public class SortComparison {
             this.resetTimeVars(startTime, endTime, runTime, totalRuntime, avgRuntime);
             for (int i = 0; i < numIterations; i++) {
                this.copyArray(refArr, arr);
+               this.printArray(arr);
                startTime = System.nanoTime();
                this.iqs.quicksort(this.sortTypes[index], arr, 0, arr.length - 1);
+//               System.out.println("RunAll sortTypes: " + this.sortTypes[index]);
                endTime = System.nanoTime(); // stop metric
                runTime = endTime - startTime; // calculate metric
                // System.out.println(" Round " + (i+1) + ": " + runTime);
                totalRuntime += runTime;
             }
+            this.printArray(arr);
             this.displayMetrics(totalRuntime, numIterations);
          
          // sort type: "hs"
@@ -314,13 +326,15 @@ public class SortComparison {
             this.resetTimeVars(startTime, endTime, runTime, totalRuntime, avgRuntime);
             for (int i = 0; i < numIterations; i++) {
                this.copyArray(refArr, arr);
+               this.printArray(arr);
                startTime = System.nanoTime();
-               this.hs.heapsort(arr, 0, arr.length-1);
+               this.hs.heapsort(arr, arr.length);
                endTime = System.nanoTime(); // stop metric
                runTime = endTime - startTime; // calculate metric
                // System.out.println("Round " + (i+1) + ": " + runTime);
                totalRuntime += runTime;
             }
+            this.hs.printArray(arr);
             this.displayMetrics(totalRuntime, numIterations);
          }
          

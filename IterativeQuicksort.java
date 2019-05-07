@@ -21,8 +21,8 @@ import java.util.Stack;
 // Ref: https://www.geeksforgeeks.org/java-program-for-iterative-quick-sort/
 // by Rajat Mishra
 public class IterativeQuicksort {
-   BufferedReader input;
-   BufferedWriter output;
+//   BufferedReader input;
+//   BufferedWriter output;
    
    InsertionSort is = new InsertionSort();
 
@@ -81,30 +81,34 @@ public class IterativeQuicksort {
          int start = (int) stack.pop();
          
          // partition sizes of one and two are already sorted
-         if (end - start < 2) {
+         if ((end - start + 1) <= 2) { // two items
             continue;
          }
          
+         // three items
          if (sortType.equals("qs")){
             pivotIndex = partition(arr, start, end, "qs");
-         } else if (sortType.equals("qs_k50")){
+//            System.out.println("qs pivotIndex = " + pivotIndex);
+         } else if (sortType.equals("qs_k50")) {
             if ((end - start) == 50) {
-               System.out.println("*** PARTITION SIZE = 50 ***");
+               // System.out.println("*** PARTITION SIZE = 50 ***");
                is.insertionSort(arr, start, end);
             }
             pivotIndex = partition(arr, start, end, "qs_k50");
+//            System.out.println("qs_k50 pivotIndex = " + pivotIndex);
          } else if (sortType.equals("qs_k100")){
             if ((end - start) == 100) {
-               System.out.println("*** PARTITION SIZE = 100 ***");
+               // System.out.println("*** PARTITION SIZE = 100 ***");
                is.insertionSort(arr, start, end);
             }
             pivotIndex = partition(arr, start, end, "qs_k100");
+//            System.out.println("qs_k100 pivotIndex = " + pivotIndex);
          } else { // if (sortType.equals("qs_mot")){
+//            this.printArray(arr);
             pivotIndex = partition(arr, start, end, "qs_mot");
+//            System.out.println("qs_mot pivotIndex = " + pivotIndex);
          }
-
          
-//         pivotIndex = partition(arr, start, end, "qs");
          stack.push(pivotIndex + 1);
          stack.push(end);
          stack.push(start);
@@ -145,6 +149,7 @@ public class IterativeQuicksort {
          idx++;
       }
       swap(arr, highIndex - 1, idx);
+//      System.out.println("idx = " + idx);
       return idx;
    }
 
@@ -159,34 +164,53 @@ public class IterativeQuicksort {
    // determines next pivot item
    private int medianOfThree(int[] arr, int startIndex, int endIndex) {
       
+      int start;
+      int end;
       int medianIndex;
       int medianValue;
-      int middleIndex = (int) ((endIndex - startIndex) /2);
-      int partitionSize = endIndex - startIndex;
+      int middleIndex;
+      int partitionSize;
       int[] threeNums = new int[3];
       
-      threeNums[0] = arr[startIndex];
-      threeNums[1] = arr[middleIndex];
+      start = startIndex;
       if (endIndex == arr.length) {
-         threeNums[2] = arr[endIndex-1];
+         end = endIndex - 1;
       } else {
-         threeNums[2] = arr[endIndex];
+         end = endIndex;
       }
       
-      Arrays.sort(threeNums);
+      partitionSize = end - start;
       
-      
-      if (partitionSize > 2) {
+//      if (partitionSize > 2) { // 3 or more items in partition
+         
+         middleIndex = (int) ((start + end) /2);
+//         System.out.println("indexes (begin): " + start + " " + middleIndex + " " + end);
+         threeNums[0] = arr[start];
+         threeNums[1] = arr[middleIndex];
+         threeNums[2] = arr[end];
+
+//         System.out.println("end = " + end);
+         
+         Arrays.sort(threeNums);
+//         for (int i = 0; i < threeNums.length; i++) {
+//            System.out.println("threeNums: " + threeNums[i]);
+//         }
          // select the index of the median value
          medianValue = threeNums[1];
-         medianIndex = Arrays.asList(threeNums).indexOf(medianValue);
-      } else {
-         // one or two items in the partition
-         // medianIndex is the left or sole item
-         medianIndex = startIndex;
-      }
-      
-      return medianIndex;
+         medianIndex = middleIndex;
+//         medianIndex = Arrays.asList(threeNums).indexOf(medianValue);
+//         System.out.println("medianIndex = " + medianIndex);
+//      } 
+//      else {
+//         // one or two items in the partition
+//         // medianIndex is the left or sole item
+//         medianValue = arr[start];
+//         medianIndex = start;
+//      }
+//      System.out.println("indexes (end): " + start + " " + medianIndex + " " + end);
+//      System.out.println("values (end): " + threeNums[0] + " " + threeNums[1] + " " + threeNums[2]);
+//      System.out.println("medianValue = " + medianValue);
+      return medianValue;
    }
    
    
@@ -194,10 +218,9 @@ public class IterativeQuicksort {
    // *** REMOVE AFTER TESTING ***
    
    // prints contents of arr
-   private void printArr(int arr[], int n) {
-      int i;
-      for (i = 0; i < n; ++i)
-         System.out.println(arr[i]);
+   public void printArray(int arr[]) {
+      for (int i = 0; i < arr.length; ++i)
+         System.out.print(arr[i] + " ");
    }
 
    private void copyArray(int[] srcArr, int[] destArr) {
