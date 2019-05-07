@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Stack;
 
 // Java implementation of iterative quick sort 
@@ -70,7 +71,7 @@ public class IterativeQuicksort {
    // #ixzz5n6BmPVfj
    public void quicksort(String sortType, int arr[], int lowerIndex, int upperIndex) {
 
-      int pivotIndex;
+      int pivotIndex = 0;
       Stack<Integer> stack = new Stack<Integer>();
       stack.push(0);
       stack.push(arr.length);
@@ -83,24 +84,27 @@ public class IterativeQuicksort {
          if (end - start < 2) {
             continue;
          }
-         else if (sortType.equals("qs")){
-
-         }
-         else if (sortType.equals("qs_k50")){
+         
+         if (sortType.equals("qs")){
+            pivotIndex = partition(arr, start, end, "qs");
+         } else if (sortType.equals("qs_k50")){
             if ((end - start) == 50) {
                System.out.println("*** PARTITION SIZE = 50 ***");
+               is.insertionSort(arr, start, end);
             }
-         }
-         else if (sortType.equals("qs_k100")){
+            pivotIndex = partition(arr, start, end, "qs_k50");
+         } else if (sortType.equals("qs_k100")){
             if ((end - start) == 100) {
                System.out.println("*** PARTITION SIZE = 100 ***");
+               is.insertionSort(arr, start, end);
             }
+            pivotIndex = partition(arr, start, end, "qs_k100");
+         } else { // if (sortType.equals("qs_mot")){
+            pivotIndex = partition(arr, start, end, "qs_mot");
          }
-         else if (sortType.equals("qs_mot")){
-            
-         }
+
          
-         pivotIndex = partition(arr, start, end);
+//         pivotIndex = partition(arr, start, end, "qs");
          stack.push(pivotIndex + 1);
          stack.push(end);
          stack.push(start);
@@ -113,13 +117,19 @@ public class IterativeQuicksort {
    // iterative-quicksort-example-in-java-without-recursion.html
    // #ixzz5n6F8nAuX
    // modified, first item is pivot
-   private int partition(int arr[], int lowIndex, int highIndex) {
+   private int partition(int arr[], int lowIndex, int highIndex, String qsType) {
 
       int idx = 0;
       int l = lowIndex;
       int h = highIndex - 2;
-      int pivotValue = arr[lowIndex]; // pivot value is always the first item
+      int pivotValue;
 
+      if (qsType.equals("qs_mot")) {
+         pivotValue = this.medianOfThree(arr, lowIndex, highIndex);
+      } else { // qsType is "qs", "qs_k50", or "qs_k100"
+         pivotValue = arr[lowIndex]; // pivot value is the first item
+      }
+      
       swap(arr, lowIndex, highIndex - 1);
       while (l < h) {
          if (arr[l] < pivotValue) {
@@ -146,6 +156,41 @@ public class IterativeQuicksort {
       return;
    }
 
+   // determines next pivot item
+   private int medianOfThree(int[] arr, int startIndex, int endIndex) {
+      
+      int medianIndex;
+      int medianValue;
+      int middleIndex = (int) ((endIndex - startIndex) /2);
+      int partitionSize = endIndex - startIndex;
+      int[] threeNums = new int[3];
+      
+      threeNums[0] = arr[startIndex];
+      threeNums[1] = arr[middleIndex];
+      if (endIndex == arr.length) {
+         threeNums[2] = arr[endIndex-1];
+      } else {
+         threeNums[2] = arr[endIndex];
+      }
+      
+      Arrays.sort(threeNums);
+      
+      
+      if (partitionSize > 2) {
+         // select the index of the median value
+         medianValue = threeNums[1];
+         medianIndex = Arrays.asList(threeNums).indexOf(medianValue);
+      } else {
+         // one or two items in the partition
+         // medianIndex is the left or sole item
+         medianIndex = startIndex;
+      }
+      
+      return medianIndex;
+   }
+   
+   
+   
    // *** REMOVE AFTER TESTING ***
    
    // prints contents of arr
