@@ -66,9 +66,8 @@ public class SortComparison {
       int arrSize = 0;
       
       // cl (command line) vars
-      String clNumItems;
+      String clNumItems = "";
       String clInputFilename = null;
-      String clReportFilename = null;
       String clOutputFilename = null;
       String cmdline = null;
       
@@ -77,54 +76,77 @@ public class SortComparison {
       
       SortComparison sc = new SortComparison();
 
-      // ===== verify command line arguments =====
+      /* ===== command line usage ===== */
       
-      if ((args.length != 1) && (args.length != 2)) {
+      if ((args.length != 3) && (args.length != 4)) {
+         System.out.println("Insufficient number of arguments\n");
          System.out.println(
             "Usage:\n\n\tjava SortComparison <command list filename>"
                + " <report filename>"
                + " <# items> [# iterations]");
          System.out.println("\n\tThe <command list file> has the format:");
-         System.out.println("\t\t<# of items> " + 
-                            "<input filename> " + 
+         System.out.println("\t\t<input filename> " + 
                             "[<output filename for n=50 items>]");
          System.out.println();
-         System.out.println("\t\tWhere\n\t\t\tThe <# of items> is: " + 
-               "50 | 500 | 1k | 2k | 5k | 10k | 20k");
-         System.out.println();
+         System.out.println("\t\tWhere");
          System.out.println(
-               "\t\t\tThe <output filename> will contain the sorted array and"
-                     + " is required for 50 items, only.");
+            "\t\t\t<input filename> contains the input items to sort"
+            + " (see Note)");
+         System.out.println(
+            "\t\t\t<output filename> will contain the sorted array and"
+            + " is required for 50 items, only.");
          System.out.println();
          System.out.println(
             "\tThe <report filename> will contain runtime metrics.");
          System.out.println();
+         System.out.println("\tThe <# of items> is: " + 
+               "50 | 500 | 1k | 2k | 5k | 10k | 20k");
+         System.out.println();
          System.out.println(
             "\tThe [# iterations] is the number of times each sort should run"
             + " - the average runtime will be calculated. "
-            + "\n\tDefault is 1 iteration.");
+            + "\n\tDefault is 1 iteration. This qualifier is optional.");
          System.out.println();
-         System.out.println("\tNote: Each command list file contains the run"
-            + " parameters for the same n items and files for the\n\t      4 order"
-            + " types listed in the following order:"
-            + " ascending, random, random duplicate, reverse.");
+         System.out.println("\tNote: Each command list file contains a list"
+            + " of input files for the same n amount of items for the\n\t    "
+            + "  4 order types listed one per line, in the following order:\n"
+            + "\t\tascending, random, random duplicate, reverse.");
+         System.out.println();
          System.exit(1);
-      }
+      } 
       
-      if (args.length == 4) {
-         // TODO consider a limit
-         sc.numIterations = Integer.parseInt(args[3]);
+      if ((args.length == 3) || (args.length == 4)) {
+
+         // validate number of items specified in command line
+         // must be 50, 500, 1k, 2k, 5k, 10k, 20k
+         clNumItems = args[2]; // string value
+         sc.validateNumItems(clNumItems);
+         sc.numItems = sc.getArraySize(clNumItems);
+         arrSize = sc.numItems;
+
+         if (args.length == 3) {
+            // number of iterations per sort unspecified, set to default = 1
+            sc.numIterations = 1;
+         } else {
+            // TODO consider a limit
+            sc.numIterations = Integer.parseInt(args[3]);
+         }
+
+         // opens input command list file handler
+         sc.cmdlist = sc.utils.openInputFileHandler(sc.cmdlist, args[0]);
+
+         // opens output report file handler
+         sc.report = sc.utils.openOutputFileHandler(sc.report, args[1]);
+
       }
-      
-      // opens command list file handler
-      sc.cmdlist = sc.utils.openInputFileHandler(sc.cmdlist, args[0]);
       
       // store commands from the command line list
       for (int clIndex = 0; clIndex < NUM_ORDER_TYPES; clIndex++) {
          try {
             cmdline = sc.cmdlist.readLine();
             if (cmdline == null) {
-               break;
+               System.out.println("Insufficient number of commands");
+               System.exit(1);
             }
          } catch (IOException ioe) {
             System.exit(1);
@@ -138,32 +160,16 @@ public class SortComparison {
       for (int fileIndex = 0; fileIndex < NUM_ORDER_TYPES; fileIndex++) {
          
          commandLine = cmdArr[fileIndex].split(" ");
-
-         clNumItems = commandLine[0];
-         clInputFilename = commandLine[1];
-         clReportFilename = commandLine[2];
-         if (clNumItems.equals("50")) {
-            clOutputFilename = commandLine[3];
-            System.out.println("Sorted Output Filename: " + clOutputFilename);
-         }
-
-         // validate number of items specified in command line
-         sc.validateNumItems(clNumItems);
-
-         // set array size as valid number of items from command line
-         arrSize = sc.getArraySize(clNumItems);
-
-         // opens report file handler
-         sc.report = sc.utils.openOutputFileHandler(sc.report, clReportFilename);
-
-         // opens output file handler
-         if (arrSize == 50) {
-            sc.output = sc.utils.openOutputFileHandler(sc.output, clOutputFilename);
-         }
-
+         clInputFilename = commandLine[0];
          // opens input file handler (one for each of the four order types)
          sc.input = sc.utils.openInputFileHandler(sc.input, clInputFilename);
          
+         if (sc.numItems == 50) {
+            clOutputFilename = commandLine[1];
+            System.out.println("Sorted Output Filename: " + clOutputFilename);
+            sc.output = sc.utils.openOutputFileHandler(sc.output, clOutputFilename);
+         }
+
          refNumbers = new int[arrSize];
          numbers = new int[arrSize];
 
@@ -201,9 +207,6 @@ public class SortComparison {
          // closes input file handler(s)
          sc.utils.closeInputFileHandler(sc.input);
          
-         // closes report file handler(s)
-         sc.utils.closeOutputFileHandler(sc.report);
-         
          // closes output file handler(s)
          if (sc.output != null) {
             sc.utils.closeOutputFileHandler(sc.output);
@@ -215,6 +218,9 @@ public class SortComparison {
 
       // closes cmdlist file handler
       sc.utils.closeInputFileHandler(sc.cmdlist);
+      
+      // closes report file handler(s)
+      sc.utils.closeOutputFileHandler(sc.report);
    }
    
    // ***** PRIVATE METHOD(S) *****
@@ -374,6 +380,22 @@ public class SortComparison {
    }
    
    
+   private void validateNumItems(String numItems) {
+      if ((!numItems.equalsIgnoreCase("50")) && 
+          (!numItems.equalsIgnoreCase("500")) && 
+          (!numItems.equalsIgnoreCase("1K")) && 
+          (!numItems.equalsIgnoreCase("2K")) && 
+          (!numItems.equalsIgnoreCase("5K")) && 
+          (!numItems.equalsIgnoreCase("10K")) && 
+          (!numItems.equalsIgnoreCase("20K"))) {
+         System.out.println(
+               "[SortComparison - validateNumItems()] Invalid Input Size");
+         System.exit(1);
+      }
+      return;
+   }
+   
+   
 //   /**
 //    * method: saveMetrics() - saves number of items and avg run time
 //    *                         for metric object
@@ -414,21 +436,7 @@ public class SortComparison {
 //      metrics.append("\n");
 //      return metrics.toString();
 //   }
-   
-   private void validateNumItems(String numItems) {
-      if ((!numItems.equalsIgnoreCase("50")) && 
-          (!numItems.equalsIgnoreCase("500")) && 
-          (!numItems.equalsIgnoreCase("1K")) && 
-          (!numItems.equalsIgnoreCase("2K")) && 
-          (!numItems.equalsIgnoreCase("5K")) && 
-          (!numItems.equalsIgnoreCase("10K")) && 
-          (!numItems.equalsIgnoreCase("20K"))) {
-         System.out.println(
-               "[SortComparison - validNumItems()] Invalid Input Size");
-         System.exit(1);
-      }
-      return;
-   }
+
    
    // ***** PRIVATE VARIABLE(S) *****
    
