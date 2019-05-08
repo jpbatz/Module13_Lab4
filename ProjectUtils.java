@@ -132,7 +132,7 @@ public class ProjectUtils {
     *  @ref Project0.java
     */
    public void writeTextOut(String text, BufferedWriter output) {
-      // System.out.println(text);
+      System.out.println(text);
       try {
          output.write(text + "\n");
       } catch (IOException ioe) {
@@ -149,9 +149,11 @@ public class ProjectUtils {
     *  @ref Project0.java
     */
    public void writeArrayOut(int[] arr, BufferedWriter output) {
+      String item = "";
       for (int i=0; i<=arr.length-1; i++) {
-         writeTextOut(String.valueOf(arr[i]), output);
+         item += arr[i] + " ";
       }
+      writeTextOut(String.valueOf(item), output);
       System.out.println();
    }
 }

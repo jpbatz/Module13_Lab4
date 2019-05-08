@@ -4,9 +4,11 @@
  * 
  * Module 13: Lab 4 - Sort Comparison
  * Class: IterativeQuickSort.java
- * Iterative Quicksort 1:
- * Pivot = [0]
- * Stop at partition size 1 and 2
+ * Iterative Quicksorts:
+ * - (1) General ("qs") with first item as the pivot value, stops at size < 2
+ * - (2) Insertion Sort at partition size k=50 ("qs_k50")
+ * - (3) Insertion SOrt at partition size k=100 ("qs_100")
+ * - (4) Selected pivot is median of three ("qs_mot")
  */
 package Module13_Lab4;
 
@@ -21,12 +23,19 @@ public class IterativeQuicksort {
    InsertionSort is    = new InsertionSort();
    ProjectUtils  utils = new ProjectUtils();
 
-   // Ref: https://javarevisited.blogspot.com/2016/09/
-   // iterative-quicksort-example-in-java-without-recursion.html
-   // #ixzz5n6BmPVfj
+   /**
+    * method: quicksort() - iteratively runs 4 quicksort types using stacks
+    * @param sortType - "qs", "qs_k50", "qs_k100", or "qs_mot"
+    * @param arr - items to be sorted
+    * @param lowerIndex - index of the first item in the array
+    * @param upperIndex - index of the last item in the array
+    * @return none
+    * @ref https://javarevisited.blogspot.com/2016/09/
+    * iterative-quicksort-example-in-java-without-recursion.html
+    * #ixzz5n6BmPVfj
+    */
    public void quicksort(String sortType, int arr[], int lowerIndex,
                          int upperIndex) {
-
       int pivotIndex;
       int end;
       int start;
@@ -49,28 +58,21 @@ public class IterativeQuicksort {
             continue;
          }
 
-         // three items
+         // determines pivot index for the 4 quicksort types
          if (sortType.equals("qs")) {
             pivotIndex = partition(arr, start, end, "qs");
-            // System.out.println("qs pivotIndex = " + pivotIndex);
          } else if (sortType.equals("qs_k50")) {
             if ((end - start + 1) == 50) {
-               // System.out.println("*** PARTITION SIZE = 50 ***");
                is.insertionSort(arr, start, end);
             }
             pivotIndex = partition(arr, start, end, "qs_k50");
-            // System.out.println("qs_k50 pivotIndex = " + pivotIndex);
          } else if (sortType.equals("qs_k100")) {
             if ((end - start + 1) == 100) {
-               // System.out.println("*** PARTITION SIZE = 100 ***");
                is.insertionSort(arr, start, end);
             }
             pivotIndex = partition(arr, start, end, "qs_k100");
-            // System.out.println("qs_k100 pivotIndex = " + pivotIndex);
-         } else { // if (sortType.equals("qs_mot")){
-            // this.printArray(arr);
+         } else {
             pivotIndex = partition(arr, start, end, "qs_mot");
-            // System.out.println("qs_mot pivotIndex = " + pivotIndex);
          }
 
          stack.push(pivotIndex + 1);
@@ -80,8 +82,15 @@ public class IterativeQuicksort {
       }
    }
 
-   // Ref: zyBook Module 9: Chapter 7.2 Quicksort
-   // modified for first item is pivot
+   /**
+    * method: partition() - divides a partition into two new partitions
+    * @param arr - array of items to be sorted
+    * @param lowIndex - index of first item in partition
+    * @param highIndex - index of last item in partition
+    * @param qsType - sort type "qs", "qs_k50", "qs_k100", "qs_mot"
+    * @return index of first item in the new upper partition
+    * @ref zyBook Module 9: Chapter 7.2 Quicksort
+    */
    private int partition(int arr[], int lowIndex, int highIndex,
                          String qsType) {
       int l;
@@ -95,10 +104,10 @@ public class IterativeQuicksort {
       h = highIndex;
 
       // pick pivot value
-      if (qsType.equals("qs_mot")) {
+      if (qsType.equals("qs_mot")) { // pick median value of three
          pivotValue = this.medianOfThree(arr, lowIndex, highIndex);
       } else { // qsType is "qs", "qs_k50", or "qs_k100"
-         pivotValue = arr[lowIndex]; // pick first item as pivot value
+         pivotValue = arr[lowIndex]; // pick first item
       }
 
       while (!done) {
@@ -126,7 +135,13 @@ public class IterativeQuicksort {
       return h;
    }
 
-   // determines next pivot item via median value of three method
+   /**
+    * method: medianOfThree() - generates a median value of three items
+    * @param arr - input array of items to sort
+    * @param startIndex - first item's index in partition to sort
+    * @param endIndex - last item's index in partition to sort
+    * @return median pivot value
+    */
    private int medianOfThree(int[] arr, int startIndex, int endIndex) {
 
       int start;
