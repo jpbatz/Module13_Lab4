@@ -5,8 +5,8 @@
  * Module 13: Lab 4 - Sort Comparison
  * Class: SortComparison.java
  * - Runs the 5 sort methods on input files of 50, 500, 1000, 2000, and 5000 
- *   items.
- * - Collects runtime metrics
+ *   items
+ * - Reports runtime metrics
  *   For extremely low run times, runs multiple and reports average runtime.
  * - Prints output for input file of 50 items
  */
@@ -14,20 +14,22 @@ package Module13_Lab4;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
+//import java.io.FileReader;
+//import java.io.FileWriter;
 import java.io.IOException;
-
-import Module8Lab2.RunMetric;
 
 public class SortComparison {
 
-   RunMetric[] runMetrics;
-   int metricsIndex;
+   // RunMetric[] runMetrics;
+   // int metricsIndex;
    int numItems = 0;
-
-   String[] orderTypes = {"asc", "ran", "dup", "rev"};
-   String[] sortTypes = {"qs", "qs_k50", "qs_k100", "qs_mot", "hs"};
+   int numIterations;
+   
+   long startTime;
+   long endTime;
+   long runTime;
+   long totalRuntime;
+   long avgRuntime;
    
    BufferedReader  cmdlist;   // contains run command lines
    BufferedReader  input;     // asc, ran, dup, rev input files
@@ -39,69 +41,77 @@ public class SortComparison {
    HeapSort hs;
    
    public SortComparison() {
-      metricsIndex = 0;
+      // metricsIndex = 0;
       numItems = 0;
+      numIterations = 1; // default
+      
+      startTime = 0;
+      endTime = 0;
+      runTime = 0;
+      totalRuntime = 0;
+      avgRuntime = 0;
       
       this.utils = new ProjectUtils();
       this.iqs = new IterativeQuicksort();
       this.hs = new HeapSort();
-      
-      runMetrics = new RunMetric[numItems];
+
+      // runMetrics = new RunMetric[numItems];
    }
    
    // ***** PROGRAM ENTRY POINT *****
    public static void main(String[] args) {
 
-//      // runtime metrix measurements
-//      long avgRuntime = 0;
       int[] refNumbers;  // original input values for restoring between sorts
       int[] numbers;     // working space to sort reference numbers
       int arrSize = 0;
       
-//      String inputOrder;
-//      String sortType;
-
+      // cl (command line) vars
       String clNumItems;
       String clInputFilename = null;
       String clReportFilename = null;
       String clOutputFilename = null;
-      
       String cmdline = null;
       
       String[] cmdArr = new String[4];
       String[] commandLine = new String[4];
-      String[] inputFilenames = new String[4];
-      String[] reportFilenames = new String[4];
-      String[] outputFilenames = new String[4];
-//      String[] orderTypes = {"asc", "ran", "dup", "rev"};
-//      String[] sortTypes = {"qs", "qs_k50", "qs_k100", "qs_mot", "hs"};
+      // String[] inputFilenames = new String[4];
+      // String[] reportFilenames = new String[4];
+      // String[] outputFilenames = new String[4];
       
       SortComparison sc = new SortComparison();
 
       // ===== verify command line arguments =====
       
-      if (args.length != 1) {
-         System.out.println("Usage:\tjava SortComparison <input file list>");
+      if ((args.length != 1) && (args.length != 2)) {
+         System.out.println(
+            "Usage:\tjava SortComparison <input file list> [# iterations]");
          System.out.println("\nThe input file list has the format:");
          System.out.println("<# of items> " + 
                             "<input filename> " + 
                             "<report filename> " + 
                             "[<output filename>]");
-         System.out.println("\nWhere the <# of items> is: " + 
+         System.out.println("\nWhere\n\tThe <# of items> is: " + 
                             "50 | 500 | 1k | 2k | 5k | 10k | 20k");
          System.out.println(
-               "\nThe <report filename> contains runtime metrics.");
+            "\n\tThe <report filename> will contain runtime metrics.");
          System.out.println(
-               "\nThe <output filename> is required fo 50 items, only.");
+            "\n\tThe <output filename> will contain the sorted array and is"
+            + " required for 50 items, only.");
+         System.out.println(
+            "\nThe [# iterations] is the number of times each sort should run"
+            + " - the average runtime will be calculated.  Default is 1.");
          System.exit(1);
       }
       
-
+      if (args.length == 2) {
+         // TODO consider a limit
+         sc.numIterations = Integer.parseInt(args[1]);
+      }
       
-      // ==== open i/o file handlers =====
+      /* ==== open i/o file handlers ===== */
       
       // opens command list file handler
-      sc.cmdlist = sc.openInputFileHandler(sc.cmdlist, args[0]);
+      sc.cmdlist = sc.utils.openInputFileHandler(sc.cmdlist, args[0]);
       
       // store commands from the command line list
       for (int clIndex = 0; clIndex < NUM_ORDER_TYPES; clIndex++) {
@@ -113,7 +123,7 @@ public class SortComparison {
          } catch (IOException ioe) {
             System.exit(1);
          }
-//         System.out.println(cmdline);
+         // System.out.println(cmdline);
          cmdArr[clIndex] = cmdline;
       }
       System.out.println();
@@ -135,18 +145,18 @@ public class SortComparison {
          sc.validateNumItems(clNumItems);
 
          // set array size as valid number of items from command line
-         arrSize = sc.getArraySize(clNumItems.toUpperCase());
+         arrSize = sc.getArraySize(clNumItems);
 
          // opens report file handler
-         sc.report = sc.openOutputFileHandler(sc.report, clReportFilename);
+         sc.report = sc.utils.openOutputFileHandler(sc.report, clReportFilename);
 
          // opens output file handler
          if (arrSize == 50) {
-            sc.output = sc.openOutputFileHandler(sc.output, clOutputFilename);
+            sc.output = sc.utils.openOutputFileHandler(sc.output, clOutputFilename);
          }
 
          // opens input file handler (one for each of the four order types)
-         sc.input = sc.openInputFileHandler(sc.input, clInputFilename);
+         sc.input = sc.utils.openInputFileHandler(sc.input, clInputFilename);
          
          refNumbers = new int[arrSize];
          numbers = new int[arrSize];
@@ -160,94 +170,52 @@ public class SortComparison {
                System.out.println(ioe);
                System.exit(1);
             }
-//            System.out.println(refNumbers[i]);
+            // System.out.println(refNumbers[i]);
          }
          System.out.println();
 
-         // sorts the array(s):
-         // run sort types multiple times (calculates average run times):
+         // sorts the array(s) once (default) or
+         // may run sort types multiple times (calculates average run times):
          // on n = 50, 500, 1k, 2k, 5k, 10k, 20k items
-         sc.runAllSortTypes(refNumbers, numbers, sc.orderTypes[fileIndex], 1);
+         sc.runAllSortTypes(refNumbers, numbers, sc.orderTypes[fileIndex], 
+                            sc.numIterations);
          
 
+         // TODO make this happen in runAllSortTypes?
          if (arrSize == 50) { // output file for n = 50, only
             
             // TODO output for each of the 5 sort types
-            sc.copyArray(refNumbers, numbers);
+            sc.utils.copyArray(refNumbers, numbers);
+            // results from all sortTypes to respective output file
             sc.iqs.quicksort("qs", numbers, 0, numbers.length - 1);
             // sc.printArray(numbers);
-            sc.writeArrayOut(numbers, sc.output); // sorted array to output file
+            sc.utils.writeArrayOut(numbers, sc.output); // sorted array to output file
          }
 
          // closes input file handler(s)
-         sc.closeInputFileHandler(sc.input);
+         sc.utils.closeInputFileHandler(sc.input);
          
          // closes report file handler(s)
-         sc.closeOutputFileHandler(sc.report);
+         sc.utils.closeOutputFileHandler(sc.report);
          
          // closes output file handler(s)
          if (sc.output != null) {
-            sc.closeOutputFileHandler(sc.output);
+            sc.utils.closeOutputFileHandler(sc.output);
          }
          
-      } // end for (iterates 4 files)
+      } // end for (iterates 4 files for 4 input order types)
       
       // ==== close i/o file handlers =====
 
       // closes cmdlist file handler
-      sc.closeInputFileHandler(sc.cmdlist);
+      sc.utils.closeInputFileHandler(sc.cmdlist);
    }
    
    // ***** PRIVATE METHOD(S) *****
    
-   /**
-    *  method: writeOut() - writes a string to the output file handler
-    *  @param text - text to write.
-    *  @param output - output file handler
-    *  @return - none
-    *  @ref Project0.java
-    */
-   private void writeOut(String text, BufferedWriter output) {
-      // System.out.println(text);
-      try {
-         output.write(text + "\n");
-      } catch (IOException ioe) {
-         System.err.println(ioe.toString());
-         return;
-      }
-      return;
-   }
-   
-//   private void printArray(int[] arr) {
-//      for (int i=0; i<arr.length; i++) {
-//         System.out.print(String.valueOf(arr[i]) + " ");
-//      }
-//      System.out.println();
-//   }
-   
-//   public void printArray(int[] arr) {
-//      for (int item : arr) {
-//         System.out.print(item + " ");
-//      }
-//      System.out.println();
-//   }
-   
-   
-   private void writeArrayOut(int[] arr, BufferedWriter output) {
-      for (int i=0; i<=arr.length-1; i++) {
-         this.writeOut(String.valueOf(arr[i]), output);
-      }
-      System.out.println();
-   }
-   
    private int getArraySize(String arg) {
       int arrSize = 0;
-      switch (arg) {
-         // remove case "10" for submission
-         case "10": {
-            arrSize = 10;
-            break;
-         }
+      switch (arg.toUpperCase()) {
          case "50": {
             arrSize = 50;
             break;
@@ -284,22 +252,8 @@ public class SortComparison {
       return arrSize;
    }
    
-   private void copyArray(int[] srcArr, int[] destArr) {
-      // destArr = null;
-      // destArr = new int[srcArr.length];
-      for (int i = 0; i < srcArr.length; i++) {
-         destArr[i] = srcArr[i];
-      }
-   }
-   
    private void runAllSortTypes(int[] refArr, int[] arr, String orderType, 
                                 int numIterations) {
-
-      long startTime = 0;
-      long endTime = 0;
-      long runTime = 0;
-      long totalRuntime = 0;
-      long avgRuntime = 0;
       
       int size = refArr.length;
       int firstIndex = 0;
@@ -318,127 +272,66 @@ public class SortComparison {
          // sort types: "qs", "qs_k50", "qs_k100", "qs_mot"
          if (!this.sortTypes[index].equals("hs")) {
             System.out.println(subHeadings[index]);
-            this.resetTimeVars(startTime, endTime, runTime, totalRuntime, avgRuntime);
+            this.resetTimeVars();
             for (int i = 0; i < numIterations; i++) {
-               this.copyArray(refArr, arr);
-               utils.printArray(arr);
-               startTime = System.nanoTime();
-//               this.iqs.quicksort(this.sortTypes[index], arr, 0, arr.length - 1);
-               this.iqs.quicksort(this.sortTypes[index], arr, firstIndex, lastIndex);
-//               System.out.println("RunAll sortTypes: " + this.sortTypes[index]);
-               endTime = System.nanoTime(); // stop metric
-               runTime = endTime - startTime; // calculate metric
+               utils.copyArray(refArr, arr);
+               // utils.printArray(arr);
+               this.startTime = System.nanoTime();
+               this.iqs.quicksort(this.sortTypes[index], arr, firstIndex,
+                     lastIndex);
+               // System.out.println("RunAllSortTypes sortTypes: " +
+               // this.sortTypes[index]);
+               this.endTime = System.nanoTime(); // stop metric
+               this.runTime = this.endTime - this.startTime; // calculate metric
                // System.out.println(" Round " + (i+1) + ": " + runTime);
-               totalRuntime += runTime;
+               this.totalRuntime += this.runTime;
             }
-            utils.printArray(arr);
-            this.displayMetrics(totalRuntime, numIterations);
+            // utils.printArray(arr);
+            this.displayMetrics();
          
          // sort type: "hs"
          } else if (this.sortTypes[index].equals("hs")) {
             System.out.println(subHeadings[index]);
-            this.resetTimeVars(startTime, endTime, runTime, totalRuntime, avgRuntime);
+            this.resetTimeVars();
             for (int i = 0; i < numIterations; i++) {
-               this.copyArray(refArr, arr);
-               utils.printArray(arr);
-               startTime = System.nanoTime();
+               utils.copyArray(refArr, arr);
+               // utils.printArray(arr);
+               this.startTime = System.nanoTime();
                this.hs.heapsort(arr, arr.length);
-               endTime = System.nanoTime(); // stop metric
-               runTime = endTime - startTime; // calculate metric
+               this.endTime = System.nanoTime(); // stop metric
+               this.runTime = this.endTime - this.startTime; // calculate metric
                // System.out.println("Round " + (i+1) + ": " + runTime);
-               totalRuntime += runTime;
+               this.totalRuntime += this.runTime;
             }
-//            this.hs.printArray(arr);
-            utils.printArray(arr);
-            this.displayMetrics(totalRuntime, numIterations);
+            // utils.printArray(arr);
+            this.displayMetrics();
          }
-         
-         
       }
-      
-//      System.out.println("Quicksort 2 - k=50 Insertion Sort:");
-//      this.resetTimeVars(startTime, endTime, runTime, totalRuntime, avgRuntime);
-//      for (int i = 0; i < numIterations; i++) {
-//         this.copyArray(refArr, arr);
-//         startTime = System.nanoTime();
-//         this.iqs.quicksort("qs_k50", arr, 0, arr.length-1);
-//         endTime = System.nanoTime(); // stop metric
-//         runTime = endTime - startTime; // calculate metric
-//         // System.out.println("    Round " + (i+1) + ": " + runTime);
-//         totalRuntime += runTime;
-//      }
-//      this.displayMetrics(totalRuntime, numIterations);
-//      
-//      System.out.println("Quicksort 3 - k=100 Insertion Sort:");
-//      this.resetTimeVars(startTime, endTime, runTime, totalRuntime, avgRuntime);
-//      for (int i = 0; i < numIterations; i++) {
-//         this.copyArray(refArr, arr);
-//         startTime = System.nanoTime();
-//          this.iqs.quicksort("qs_k100", arr, 0, arr.length-1);
-//         endTime = System.nanoTime(); // stop metric
-//         runTime = endTime - startTime; // calculate metric
-//         // System.out.println("    Round " + (i+1) + ": " + runTime);
-//         totalRuntime += runTime;
-//      }
-//      this.displayMetrics(totalRuntime, numIterations);
-//      
-//      System.out.println("Quicksort 4 - Median of Three:");
-//      this.resetTimeVars(startTime, endTime, runTime, totalRuntime, avgRuntime);
-//      for (int i = 0; i < numIterations; i++) {
-//         this.copyArray(refArr, arr);
-//         startTime = System.nanoTime();
-//         // this.iqs.quicksort("qs_mot", arr, 0, arr.length-1);
-//         endTime = System.nanoTime(); // stop metric
-//         runTime = endTime - startTime; // calculate metric
-//         // System.out.println("    Round " + (i+1) + ": " + runTime);
-//         totalRuntime += runTime;
-//      }
-//      this.displayMetrics(totalRuntime, numIterations);
-//      
-//      System.out.println("Heap Sort:");
-//      this.resetTimeVars(startTime, endTime, runTime, totalRuntime, avgRuntime);
-//      for (int i = 0; i < numIterations; i++) {
-//         this.copyArray(refArr, arr);
-//         startTime = System.nanoTime();
-//         // this.iqs.heapsort(arr, 0, arr.length-1);
-//         endTime = System.nanoTime(); // stop metric
-//         runTime = endTime - startTime; // calculate metric
-//         // System.out.println("Round " + (i+1) + ": " + runTime);
-//         totalRuntime += runTime;
-//      }
-//      this.displayMetrics(totalRuntime, numIterations);
-      
       return;
    }
    
-   private long displayMetrics(long totalRuntime, int numIterations) {
-      
-      long avgRuntime;
+   private long displayMetrics() {
 
-      System.out.println("    Number of Runs = " + numIterations);
-      System.out.println("Cumulative Runtime = " + totalRuntime + " nSec");
-      avgRuntime = totalRuntime/numIterations;
+      System.out.println("    Number of Runs = " + this.numIterations);
+      System.out.println("Cumulative Runtime = " + this.totalRuntime + " nSec");
+      this.avgRuntime = this.totalRuntime/this.numIterations;
       System.out.println(
-            "   Average Runtime = " + avgRuntime + " nSec");
+            "   Average Runtime = " + this.avgRuntime + " nSec");
       System.out.println(
-            "   Average Runtime = " + (avgRuntime / 1000) + " uSec");
+            "   Average Runtime = " + (this.avgRuntime / 1000) + " uSec");
       System.out.println(
-            "   Average Runtime = " + (avgRuntime / 1000000) + " mSec");
+            "   Average Runtime = " + (this.avgRuntime / 1000000) + " mSec");
       System.out.println();
       
-      return avgRuntime;
+      return this.avgRuntime;
    }
    
-   private void resetTimeVars(long startTime, 
-                              long endTime,
-                              long runTime, 
-                              long totalRuntime, 
-                              long avgRuntime) {
-      startTime = 0;
-      endTime = 0;
-      runTime = 0;
-      totalRuntime = 0;
-      avgRuntime = 0;
+   private void resetTimeVars() {
+      this.startTime = 0;
+      this.endTime = 0;
+      this.runTime = 0;
+      this.totalRuntime = 0;
+      this.avgRuntime = 0;
    }
    
    private String getHeader(String sortType, int numItems) {
@@ -475,51 +368,49 @@ public class SortComparison {
    }
    
    
-   /**
-    * method: saveMetrics() - saves number of items and avg run time
-    *                         for metric object
-    * @param numItems - number of input items, n
-    * @param avgTimeElapsed - avg running time for n items
-    * @param output - output file handler
-    * @return - none
-    * @ref - Project0 (JHU)
-    */
-   private void saveMetrics(long numItems, String inputOrder, String sortType,
-                            long avgTimeElapsed, BufferedWriter output) {
-      RunMetric item = new RunMetric(numItems, avgTimeElapsed);
-      runMetrics[metricsIndex] = item;
-      try {
-         output.write(runMetrics[metricsIndex].getRuntime() + 
-                    " nSec for " + runMetrics[metricsIndex].getSize() + 
-                    " items");
-      } catch (IOException ioe) {
-         System.err.println(ioe.toString());
-         return;
-      }
-      metricsIndex++;
-      return;
-   }
-   
-   /**
-    * method: getMetrics() - shows metrics for all numbers of disks n=0 to n
-    * @param - none
-    * @return - all run metric objects stored in the run metrics array
-    * @ref: Project0 (JHU)
-    */
-   private String getMetrics() {
-      StringBuilder metrics = new StringBuilder();
-      for (int i=0; i<metricsIndex; i++) {
-         metrics.append("[" + i+ "]: " + runMetrics[i].getSize() + 
-                        " moves in " + runMetrics[i].getRuntime() + " nSec\n");
-         }
-      metrics.append("\n");
-      return metrics.toString();
-   }
+//   /**
+//    * method: saveMetrics() - saves number of items and avg run time
+//    *                         for metric object
+//    * @param numItems - number of input items, n
+//    * @param avgTimeElapsed - avg running time for n items
+//    * @param output - output file handler
+//    * @return - none
+//    * @ref - Project0 (JHU)
+//    */
+//   private void saveMetrics(long numItems, String inputOrder, String sortType,
+//                            long avgTimeElapsed, BufferedWriter output) {
+//      RunMetric item = new RunMetric(numItems, avgTimeElapsed);
+//      runMetrics[metricsIndex] = item;
+//      try {
+//         output.write(runMetrics[metricsIndex].getRuntime() + 
+//                    " nSec for " + runMetrics[metricsIndex].getSize() + 
+//                    " items");
+//      } catch (IOException ioe) {
+//         System.err.println(ioe.toString());
+//         return;
+//      }
+//      metricsIndex++;
+//      return;
+//   }
+//   
+//   /**
+//    * method: getMetrics() - shows metrics for all numbers of disks n=0 to n
+//    * @param - none
+//    * @return - all run metric objects stored in the run metrics array
+//    * @ref: Project0 (JHU)
+//    */
+//   private String getMetrics() {
+//      StringBuilder metrics = new StringBuilder();
+//      for (int i=0; i<metricsIndex; i++) {
+//         metrics.append("[" + i+ "]: " + runMetrics[i].getSize() + 
+//                        " moves in " + runMetrics[i].getRuntime() + " nSec\n");
+//         }
+//      metrics.append("\n");
+//      return metrics.toString();
+//   }
    
    private void validateNumItems(String numItems) {
-      // remove "10" for submission
-      if ((!numItems.equalsIgnoreCase("10")) && 
-          (!numItems.equalsIgnoreCase("50")) && 
+      if ((!numItems.equalsIgnoreCase("50")) && 
           (!numItems.equalsIgnoreCase("500")) && 
           (!numItems.equalsIgnoreCase("1K")) && 
           (!numItems.equalsIgnoreCase("2K")) && 
@@ -533,58 +424,14 @@ public class SortComparison {
       return;
    }
    
-   // opens input file handler
-   // Ref: Project0.java
-   private BufferedReader openInputFileHandler(BufferedReader br, String arg) {
-      try {
-         br = new BufferedReader(new FileReader(arg));
-      } catch (IOException ioe) {
-         System.err.println(ioe.toString());
-         System.exit(1);
-      }
-      return br;
-   }
-   
-   // opens output file handler
-   // Ref: Project0.java
-   private BufferedWriter openOutputFileHandler(BufferedWriter bw, String arg) {
-      try {
-         bw = new BufferedWriter(new FileWriter(arg));
-      } catch (IOException ioe) {
-         System.err.println(ioe.toString());
-         System.exit(1);
-      }
-      return bw;
-   }
-   
-   // closes input file handler
-   // Ref: Project0.java
-   private void closeInputFileHandler(BufferedReader br) {
-      try {
-         br.close();
-      } catch (IOException ioe) {
-         System.err.println(ioe.toString());
-         return;
-      }
-   }
-   
-   // closes output file handler
-   // Ref: Project0.java
-   private void closeOutputFileHandler(BufferedWriter bw) {
-      try {
-         bw.close();
-      } catch (IOException ioe) {
-         System.err.println(ioe.toString());
-         return;
-      }
-   }
-   
    // ***** PRIVATE VARIABLE(S) *****
    
    // order types: asc, ran, dup, rev
    private static int NUM_ORDER_TYPES = 4;
+   private String[] orderTypes = {"asc", "ran", "dup", "rev"};
    
    // sort types: "qs", "qs_k50", "qs_k100", "qs_mot", "hs"
    private static int NUM_SORT_TYPES = 5;
-
+   private String[] sortTypes = {"qs", "qs_k50", "qs_k100", "qs_mot", "hs"};
+   
 }
