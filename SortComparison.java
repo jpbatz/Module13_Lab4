@@ -74,9 +74,6 @@ public class SortComparison {
       
       String[] cmdArr = new String[4];
       String[] commandLine = new String[4];
-      // String[] inputFilenames = new String[4];
-      // String[] reportFilenames = new String[4];
-      // String[] outputFilenames = new String[4];
       
       SortComparison sc = new SortComparison();
 
@@ -84,31 +81,40 @@ public class SortComparison {
       
       if ((args.length != 1) && (args.length != 2)) {
          System.out.println(
-            "Usage:\tjava SortComparison <input file list> [# iterations]");
-         System.out.println("\nThe input file list has the format:");
-         System.out.println("<# of items> " + 
+            "Usage:\n\n\tjava SortComparison <command list filename>"
+               + " <report filename>"
+               + " <# items> [# iterations]");
+         System.out.println("\n\tThe <command list file> has the format:");
+         System.out.println("\t\t<# of items> " + 
                             "<input filename> " + 
-                            "<report filename> " + 
-                            "[<output filename>]");
-         System.out.println("\nWhere\n\tThe <# of items> is: " + 
-                            "50 | 500 | 1k | 2k | 5k | 10k | 20k");
+                            "[<output filename for n=50 items>]");
+         System.out.println();
+         System.out.println("\t\tWhere\n\t\t\tThe <# of items> is: " + 
+               "50 | 500 | 1k | 2k | 5k | 10k | 20k");
+         System.out.println();
          System.out.println(
-            "\n\tThe <report filename> will contain runtime metrics.");
+               "\t\t\tThe <output filename> will contain the sorted array and"
+                     + " is required for 50 items, only.");
+         System.out.println();
          System.out.println(
-            "\n\tThe <output filename> will contain the sorted array and is"
-            + " required for 50 items, only.");
+            "\tThe <report filename> will contain runtime metrics.");
+         System.out.println();
          System.out.println(
-            "\nThe [# iterations] is the number of times each sort should run"
-            + " - the average runtime will be calculated.  Default is 1.");
+            "\tThe [# iterations] is the number of times each sort should run"
+            + " - the average runtime will be calculated. "
+            + "\n\tDefault is 1 iteration.");
+         System.out.println();
+         System.out.println("\tNote: Each command list file contains the run"
+            + " parameters for the same n items and files for the\n\t      4 order"
+            + " types listed in the following order:"
+            + " ascending, random, random duplicate, reverse.");
          System.exit(1);
       }
       
-      if (args.length == 2) {
+      if (args.length == 4) {
          // TODO consider a limit
-         sc.numIterations = Integer.parseInt(args[1]);
+         sc.numIterations = Integer.parseInt(args[3]);
       }
-      
-      /* ==== open i/o file handlers ===== */
       
       // opens command list file handler
       sc.cmdlist = sc.utils.openInputFileHandler(sc.cmdlist, args[0]);
@@ -271,7 +277,7 @@ public class SortComparison {
          
          // sort types: "qs", "qs_k50", "qs_k100", "qs_mot"
          if (!this.sortTypes[index].equals("hs")) {
-            System.out.println(subHeadings[index]);
+            // System.out.println(subHeadings[index]);
             this.resetTimeVars();
             for (int i = 0; i < numIterations; i++) {
                utils.copyArray(refArr, arr);
@@ -286,12 +292,10 @@ public class SortComparison {
                // System.out.println(" Round " + (i+1) + ": " + runTime);
                this.totalRuntime += this.runTime;
             }
-            // utils.printArray(arr);
-            this.displayMetrics();
          
          // sort type: "hs"
          } else if (this.sortTypes[index].equals("hs")) {
-            System.out.println(subHeadings[index]);
+            // System.out.println(subHeadings[index]);
             this.resetTimeVars();
             for (int i = 0; i < numIterations; i++) {
                utils.copyArray(refArr, arr);
@@ -303,9 +307,11 @@ public class SortComparison {
                // System.out.println("Round " + (i+1) + ": " + runTime);
                this.totalRuntime += this.runTime;
             }
-            // utils.printArray(arr);
-            this.displayMetrics();
          }
+         
+         System.out.println(subHeadings[index]);
+         utils.printArray(arr);
+         this.displayMetrics();
       }
       return;
    }
