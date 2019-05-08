@@ -15,9 +15,6 @@ package Module13_Lab4;
 import java.util.Arrays;
 import java.util.Stack;
 
-// Java implementation of iterative quick sort 
-// Ref: https://www.geeksforgeeks.org/java-program-for-iterative-quick-sort/
-// by Rajat Mishra
 public class IterativeQuicksort {
 
    InsertionSort is    = new InsertionSort();
@@ -111,11 +108,11 @@ public class IterativeQuicksort {
       }
 
       while (!done) {
-         // Increment l while numbers[l] < pivot
+         // increment l while numbers[l] < pivot
          while (arr[l] < pivotValue) {
             ++l;
          }
-         // Decrement h while pivot < numbers[h]
+         // decrement h while pivot < numbers[h]
          while (pivotValue < arr[h]) {
             --h;
          }
@@ -158,8 +155,6 @@ public class IterativeQuicksort {
       }
 
       middleIndex = (int) ((start + end) / 2);
-      // System.out.println("indexes (begin): " + start + " " + middleIndex +
-      // " " + end);
       threeNums[0] = arr[start];
       threeNums[1] = arr[middleIndex];
       threeNums[2] = arr[end];

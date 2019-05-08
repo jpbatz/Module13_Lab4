@@ -19,18 +19,13 @@ public class InsertionSort {
     *  @param startIndex - start index of array to sort
     *  @param endIndex - end index of array to sort
     *  @return - none
-    *  @ref Project0.java
+    *  @ref https://www.codesdope.com/blog/article/
+    *  sorting-an-array-using-insertion-sort-in-java/
     */
-   // Ref: https://www.codesdope.com/blog/article/
-   // sorting-an-array-using-insertion-sort-in-java/
    public void insertionSort(int[] arr, int startIndex, int endIndex) {
 
-//      int compIndex; // tracks index for comparison
-//      int partitionSize = endIndex - startIndex + 1;
-      
       // first item at first index is already sorted for itself
       for (int currIndex = 1; currIndex < arr.length; currIndex++) {
-//      for (int currIndex = startIndex; currIndex < partitionSize; currIndex++) {
 
          // comparison index starts at current index
          int compIndex = currIndex;

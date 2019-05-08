@@ -146,7 +146,6 @@ public class SortComparison {
          } catch (IOException ioe) {
             System.exit(1);
          }
-         // System.out.println(cmdline);
          cmdArr[clIndex] = cmdline;
       }
       System.out.println();
@@ -177,7 +176,6 @@ public class SortComparison {
                System.out.println(ioe);
                System.exit(1);
             }
-            // System.out.println(refNumbers[i]);
          }
          System.out.println();
 
@@ -283,11 +281,8 @@ public class SortComparison {
                this.startTime = System.nanoTime();
                this.iqs.quicksort(this.sortTypes[index], arr, firstIndex,
                      lastIndex);
-               // System.out.println("RunAllSortTypes sortTypes: " +
-               // this.sortTypes[index]);
                this.endTime = System.nanoTime(); // stop metric
-               this.runTime = this.endTime - this.startTime; // calculate metric
-               // System.out.println(" Round " + (i+1) + ": " + runTime);
+               this.runTime = this.endTime - this.startTime; // calcs metric
                this.totalRuntime += this.runTime;
             }
          
@@ -296,12 +291,10 @@ public class SortComparison {
             this.resetTimeVars();
             for (int i = 0; i < numIterations; i++) {
                utils.copyArray(refArr, arr);
-               // utils.printArray(arr);
                this.startTime = System.nanoTime();
                this.hs.heapsort(arr, arr.length);
                this.endTime = System.nanoTime(); // stop metric
                this.runTime = this.endTime - this.startTime; // calculate metric
-               // System.out.println("Round " + (i+1) + ": " + runTime);
                this.totalRuntime += this.runTime;
             }
          }
@@ -322,32 +315,23 @@ public class SortComparison {
     * @return average runtime per sort type (single or repetitions)
     */
    private long generateMetrics() {
-
       String reportStr;
-      
       reportStr = "    Number of Runs = " + this.numIterations;
       this.utils.writeTextOut(reportStr, this.report);
-      
       reportStr = "Cumulative Runtime = " + this.totalRuntime + " nSec";
       this.utils.writeTextOut(reportStr, this.report);
-      
       this.avgRuntime = this.totalRuntime/this.numIterations;
-      
       reportStr = 
             "   Average Runtime = " + this.avgRuntime + " nSec";
       this.utils.writeTextOut(reportStr, this.report);
-      
       reportStr = 
             "   Average Runtime = " + (this.avgRuntime / 1000) + " uSec";
       this.utils.writeTextOut(reportStr, this.report);
-      
       reportStr = 
             "   Average Runtime = " + (this.avgRuntime / 1000000) + " mSec";
       this.utils.writeTextOut(reportStr, this.report);
-      
       reportStr = "";
       this.utils.writeTextOut(reportStr, this.report);
-      
       return this.avgRuntime;
    }
    
@@ -363,6 +347,7 @@ public class SortComparison {
       this.totalRuntime = 0;
       this.avgRuntime = 0;
    }
+   
    /**
     * method: getHeader() - generates header for sort order type and # items
     * @param sortType - sort type asc, ran, dup, and rev
