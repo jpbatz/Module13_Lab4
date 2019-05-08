@@ -1,0 +1,4 @@
+asc50.txt asc50out.txt
+ran50.txt ran50out.txt
+dup50.txt dup50out.txt
+rev50.txt rev50out.txt

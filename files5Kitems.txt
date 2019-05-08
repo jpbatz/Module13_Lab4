@@ -1,0 +1,4 @@
+asc5K.txt
+ran5K.txt
+dup5K.txt
+rev5K.txt

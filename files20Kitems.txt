@@ -1,0 +1,4 @@
+asc20K.txt
+ran20K.txt
+dup20K.txt
+rev20K.txt

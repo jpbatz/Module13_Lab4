@@ -1,0 +1,4 @@
+asc10K.txt
+ran10K.txt
+dup10K.txt
+rev10K.txt

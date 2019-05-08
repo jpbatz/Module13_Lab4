@@ -1,0 +1,4 @@
+asc500.txt
+ran500.txt
+dup500.txt
+rev500.txt

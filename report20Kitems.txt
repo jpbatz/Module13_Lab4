@@ -1,0 +1,148 @@
+=== Ascending Order of 20000 items: ===
+
+Quicksort 1 - Pivot First Item:
+    Number of Runs = 100
+Cumulative Runtime = 5086304282 nSec
+   Average Runtime = 50863042 nSec
+   Average Runtime = 50863 uSec
+   Average Runtime = 50 mSec
+
+Quicksort 2 - k=50 Insertion Sort:
+    Number of Runs = 100
+Cumulative Runtime = 5025921350 nSec
+   Average Runtime = 50259213 nSec
+   Average Runtime = 50259 uSec
+   Average Runtime = 50 mSec
+
+Quicksort 3 - k=100 Insertion Sort:
+    Number of Runs = 100
+Cumulative Runtime = 4946528138 nSec
+   Average Runtime = 49465281 nSec
+   Average Runtime = 49465 uSec
+   Average Runtime = 49 mSec
+
+Quicksort 4 - Median of Three:
+    Number of Runs = 100
+Cumulative Runtime = 195358891 nSec
+   Average Runtime = 1953588 nSec
+   Average Runtime = 1953 uSec
+   Average Runtime = 1 mSec
+
+Heap Sort:
+    Number of Runs = 100
+Cumulative Runtime = 169123498 nSec
+   Average Runtime = 1691234 nSec
+   Average Runtime = 1691 uSec
+   Average Runtime = 1 mSec
+
+=== Random Order of 20000 items: ===
+
+Quicksort 1 - Pivot First Item:
+    Number of Runs = 100
+Cumulative Runtime = 273572674 nSec
+   Average Runtime = 2735726 nSec
+   Average Runtime = 2735 uSec
+   Average Runtime = 2 mSec
+
+Quicksort 2 - k=50 Insertion Sort:
+    Number of Runs = 100
+Cumulative Runtime = 9048004023 nSec
+   Average Runtime = 90480040 nSec
+   Average Runtime = 90480 uSec
+   Average Runtime = 90 mSec
+
+Quicksort 3 - k=100 Insertion Sort:
+    Number of Runs = 100
+Cumulative Runtime = 9242750754 nSec
+   Average Runtime = 92427507 nSec
+   Average Runtime = 92427 uSec
+   Average Runtime = 92 mSec
+
+Quicksort 4 - Median of Three:
+    Number of Runs = 100
+Cumulative Runtime = 223960099 nSec
+   Average Runtime = 2239600 nSec
+   Average Runtime = 2239 uSec
+   Average Runtime = 2 mSec
+
+Heap Sort:
+    Number of Runs = 100
+Cumulative Runtime = 186278994 nSec
+   Average Runtime = 1862789 nSec
+   Average Runtime = 1862 uSec
+   Average Runtime = 1 mSec
+
+=== Duplicates in Random Order of 20000 items: ===
+
+Quicksort 1 - Pivot First Item:
+    Number of Runs = 100
+Cumulative Runtime = 202713978 nSec
+   Average Runtime = 2027139 nSec
+   Average Runtime = 2027 uSec
+   Average Runtime = 2 mSec
+
+Quicksort 2 - k=50 Insertion Sort:
+    Number of Runs = 100
+Cumulative Runtime = 5126524349 nSec
+   Average Runtime = 51265243 nSec
+   Average Runtime = 51265 uSec
+   Average Runtime = 51 mSec
+
+Quicksort 3 - k=100 Insertion Sort:
+    Number of Runs = 100
+Cumulative Runtime = 1158698378 nSec
+   Average Runtime = 11586983 nSec
+   Average Runtime = 11586 uSec
+   Average Runtime = 11 mSec
+
+Quicksort 4 - Median of Three:
+    Number of Runs = 100
+Cumulative Runtime = 222099495 nSec
+   Average Runtime = 2220994 nSec
+   Average Runtime = 2220 uSec
+   Average Runtime = 2 mSec
+
+Heap Sort:
+    Number of Runs = 100
+Cumulative Runtime = 180020718 nSec
+   Average Runtime = 1800207 nSec
+   Average Runtime = 1800 uSec
+   Average Runtime = 1 mSec
+
+=== Reverse Order of 20000 items: ===
+
+Quicksort 1 - Pivot First Item:
+    Number of Runs = 100
+Cumulative Runtime = 7191386835 nSec
+   Average Runtime = 71913868 nSec
+   Average Runtime = 71913 uSec
+   Average Runtime = 71 mSec
+
+Quicksort 2 - k=50 Insertion Sort:
+    Number of Runs = 100
+Cumulative Runtime = 7221625394 nSec
+   Average Runtime = 72216253 nSec
+   Average Runtime = 72216 uSec
+   Average Runtime = 72 mSec
+
+Quicksort 3 - k=100 Insertion Sort:
+    Number of Runs = 100
+Cumulative Runtime = 7398739253 nSec
+   Average Runtime = 73987392 nSec
+   Average Runtime = 73987 uSec
+   Average Runtime = 73 mSec
+
+Quicksort 4 - Median of Three:
+    Number of Runs = 100
+Cumulative Runtime = 72648806 nSec
+   Average Runtime = 726488 nSec
+   Average Runtime = 726 uSec
+   Average Runtime = 0 mSec
+
+Heap Sort:
+    Number of Runs = 100
+Cumulative Runtime = 122833730 nSec
+   Average Runtime = 1228337 nSec
+   Average Runtime = 1228 uSec
+   Average Runtime = 1 mSec
+
